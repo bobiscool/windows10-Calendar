@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{margin:0;padding:0;font-family: "Microsoft YaHei","Menlo";}
+        #Ob { width: 350px; height:340px;  margin:100px Auto;background-color: #333333;}
+        .rili { width:350px;height:300px;  margin-left:auto;margin-right:auto;}
+        #xingqi li {color:#7D8484; width:50px;height:40px;position: relative;display: inline-block;background-color: #333333; line-height: 40px; text-align: center;list-style: none;font-weight:bold;}
+        .RZ {color:whitesmoke; width:50px;height:40px;position: relative;display: inline-block;background-color: #333333; line-height: 40px; text-align: center;list-style: none;}
+        .RZ:hover {color:whitesmoke; width:50px;height:40px;position: relative;display: inline-block;background-color: orange; line-height: 40px; text-align: center;list-style: none;}
+        .RZB {color:#7D8484; width:50px;height:40px;position: relative;display: inline-block;background-color: #333333; line-height: 40px; text-align: center;list-style: none;}
+        .RZB:hover {color:#7D8484; width:50px;height:40px;position: relative;display: inline-block;background-color: orange; line-height: 40px; text-align: center;list-style: none;}
+        .RZtoday {color:whitesmoke; width:50px;height:40px;position: relative;display: inline-block;background-color: #808080; line-height: 40px; text-align: center;list-style: none;}
+        #time {  width:180px; height:50px; background-color: #333333; color:#F0403C;font-size: 20px;line-height:75px;margin:0;float:left;}
+        #Hms { float:left;width: 120px;  height:50px;background-color: #333333;color: whitesmoke; font-size: 15px; line-height: 75px;}
+        #zuoyou {  float: left;width:50px; height:50px; background-color:#333333;color:whitesmoke;font-size: 18px; line-height: 75px;font-weight:bold;  cursor: pointer;}
+        span { margin-right: 10px;}
+        .Now {cursor: pointer;}
+
+    </style>
+    <!--我想得过于复杂了 直接用js里面的时钟对象就行了-->
+    <script>
+        window.onload = function() {
+            /*对于日历的生成 需要在每个月给一个出入位置也就是*/
+            var Wai = document.querySelector("#Ob");
+            var Orz = document.querySelector("#shuzikuang");
+            var Odate = document.querySelector("#time");
+            var Ohms = document.querySelector("#Hms");
+            var Oprev = document.querySelector("#Prev");
+            var Onext = document.querySelector("#Next");
+            //生成数组 日历数组
+            var Wee = 0;  //星期几
+            var iYear = 0;
+            var iMonth = 1;
+            var iDate = 0;
+            var oldIy = 0;
+            var oldIM = 1;
+            var oldId = 0;
+            var myTime = null;
+
+            timer = setInterval(Now,1000);
+
+
+            Oprev.onclick = function(){   //点击看日子
+                clearInterval(timer);
+                Ohms.innerHTML = "What time is it?";
+                iMonth --;
+                if(iMonth<1){
+                    iYear--;
+                    iMonth=12;
+                }
+                Odate.innerHTML ="&nbsp;&nbsp;" +iYear+"年"+iMonth+"月"+1+"日";
+                Rqsc(iYear,iMonth,1)
+            };
+
+            Onext.onclick = function(){   //点击看日子
+                clearInterval(timer);
+                Ohms.innerHTML = "What time is it?";
+                iMonth ++;
+                if(iMonth>12){
+                    iYear++;
+                    iMonth=1;
+                }
+                Odate.innerHTML ="&nbsp;&nbsp;" +iYear+"年"+iMonth+"月"+1+"日";
+                Rqsc(iYear,iMonth,1)
+            };
+
+            Ohms.onclick = function(){
+                timer = setInterval(Now,1000);
+            };
+
+
+            /* Wai.onmouseout=function() {
+             timer = setInterval(Now,1000);  //移出外框后 三秒  恢复
+             };*/
+
+
+            function Now() {
+                oldIy = iYear;
+                oldIM = iMonth;
+                oldId = iDate;
+                myTime = new Date();
+                iDate = myTime.getDate();
+                iMonth = myTime.getMonth() + 1;
+                iYear = myTime.getFullYear();
+                // 以上数字类型是对象
+                var iHou = myTime.getHours();
+                var iMin = myTime.getMinutes();
+                var iSec = myTime.getSeconds();
+                //console.log(iMonth);
+                //console.dir(iYear);
+                Odate.innerHTML ="&nbsp;&nbsp;" +iYear+"年"+iMonth+"月"+iDate+"日";
+                Ohms.innerHTML =jiage0(iHou)+"时"+jiage0(iMin)+"分"+jiage0(iSec)+"秒";
+
+                if(iYear!=oldIy||iMonth!=oldIM||iDate!=oldId) {
+                    Rqsc(iYear, iMonth, iDate);  //如果年月变了  才刷新日历 ß
+                }
+            }
+
+            function Rqsc(Year, Month,mDate) {
+                //输入一个年份,它就会自动创建这个年份的数组
+                //假设年份是Year
+                Orz.innerHTML = "";
+
+                var temDay = new Date(Year,Month,mDate);
+                var XYuechang = new Date();
+                var SYuechang = temDay.setDate(0);
+                Wee = temDay.getDay();
+                XYuechang.setMonth(temDay.getMonth()+1);
+                console.log(Wee); //星期几参数 这个东西 可以算出 每个月的一号 是星期几
+                console.log(temDay.setDate(0));
+               var A= new Date(XYuechang.setDate(0));
+                var B = A.getDate();
+                var C= new Date(temDay.setDate(0));
+                var D = C.getDate();
+                for (var i = 1; i <=B+Wee; i++) {
+                    //1号是从星期几开始就那么就产生几个空白格
+                    //这里传入值 a 就是输欧星期几开始 星期日开始 就是传入0 星期一 开始就是传入1
+                    //然后前面几个全部添加 空白格
+                    // 然后呢 其实前面的空白格就是 上个月的最后几天   这里就是 数组里面的数组?? A[11].LE-A] ...A[11].LE
+                    var OtemRZ = document.createElement("dd");
+
+                    if (i <= Wee) {
+                        OtemRZ.className = "RZB";
+                        if (Month == 1) {                               //  注意for 里面去嵌套  for  里面的for循环完了才会再次执行 外部的for所以 有些样式会被覆盖
+                            OtemRZ.innerHTML = 31 - Wee + i;//排出一月份那种 前面的月份是去年的
+                        } else {
+                            OtemRZ.innerHTML = D - Wee + i; //就是倒数
+                        }
+                    } else if (i == mDate + Wee) {
+                        OtemRZ.className = "RZtoday";
+                        OtemRZ.innerHTML = mDate;
+                    } else {
+                        OtemRZ.className = "RZ";
+                        OtemRZ.innerHTML = i - Wee;
+                    }
+                    Orz.appendChild(OtemRZ);
+                }
+                //return Wee; //返回一个月份数组
+            }
+
+            function jiage0(obj){
+                return obj<10?"0"+obj:obj;
+            }
+
+
+        }
+
+
+
+
+
+    </script>
+</head>
+<body>
+
+<div id="Ob" >
+
+    <p id="time">&nbsp;&nbsp;2016年7月9日</p>
+    <p id="Hms">你好</p>
+    <P id="zuoyou"><span id="Prev"><</span><span id="Next">></span></P>
+    <div class="rili">
+        <ul id="xingqi">
+            <li>日</li><li>一</li><li>二</li><li>三</li><li>四</li><li>五</li><li>六</li>
+        </ul>
+        <dl id="shuzikuang">
+
+
+        </dl>
+        <dl id="yuefenxianhsiqi"></dl>
+    </div>
+</div>
+</body>
+</html>

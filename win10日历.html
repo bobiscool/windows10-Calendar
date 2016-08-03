@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{margin:0;padding:0;font-family: "Microsoft YaHei","Menlo";}
+        #Ob { width: 350px; height:340px;  margin:100px Auto;background-color: #333333;}
+        .rili { width:350px;height:300px;  margin-left:auto;margin-right:auto;}
+        #xingqi li {color:#7D8484; width:50px;height:40px;position: relative;display: inline-block;background-color: #333333; line-height: 40px; text-align: center;list-style: none;font-weight:bold;}
+        .RZ {color:whitesmoke; width:50px;height:40px;position: relative;display: inline-block;background-color: #333333; line-height: 40px; text-align: center;list-style: none;}
+        .RZ:hover {color:whitesmoke; width:50px;height:40px;position: relative;display: inline-block;background-color: orange; line-height: 40px; text-align: center;list-style: none;}
+        .RZB {color:#7D8484; width:50px;height:40px;position: relative;display: inline-block;background-color: #333333; line-height: 40px; text-align: center;list-style: none;}
+        .RZB:hover {color:#7D8484; width:50px;height:40px;position: relative;display: inline-block;background-color: orange; line-height: 40px; text-align: center;list-style: none;}
+        .RZtoday {color:whitesmoke; width:50px;height:40px;position: relative;display: inline-block;background-color: #808080; line-height: 40px; text-align: center;list-style: none;}
+        #time {  width:180px; height:50px; background-color: #333333; color:#F0403C;font-size: 20px;line-height:75px;margin:0;float:left;}
+        #Hms { float:left;width: 120px;  height:50px;background-color: #333333;color: whitesmoke; font-size: 15px; line-height: 75px;}
+        #zuoyou {  float: left;width:50px; height:50px; background-color:#333333;color:whitesmoke;font-size: 18px; line-height: 75px;font-weight:bold;  cursor: pointer;}
+        span { margin-right: 10px;}
+        .Now {cursor: pointer;}
+
+    </style>
+<!--我想得过于复杂了 直接用js里面的时钟对象就行了-->
+    <script>
+        window.onload = function() {
+            /*对于日历的生成 需要在每个月给一个出入位置也就是*/
+            var Wai = document.querySelector("#Ob");
+            var Orz = document.querySelector("#shuzikuang");
+            var Odate = document.querySelector("#time");
+            var Ohms = document.querySelector("#Hms");
+            var Oprev = document.querySelector("#Prev");
+            var Onext = document.querySelector("#Next");
+            //生成数组 日历数组
+            var Arlsz = [];
+            var Ery = 0;    // 二月的时间s
+            var Wee = 0;  //星期几
+            var iYear = 0;
+            var iMonth = 1;
+            var iDate = 0;
+            var oldIy = 0;
+            var oldIM = 1;
+            var oldId = 0;
+            var myTime = null;
+
+            timer = setInterval(Now,1000);
+
+
+            Oprev.onclick = function(){   //点击看日子
+                clearInterval(timer);
+                Ohms.innerHTML = "What time is it?";
+                iMonth --;
+                if(iMonth<1){
+                    iYear--;
+                    iMonth=12;
+                }
+                Odate.innerHTML ="&nbsp;&nbsp;" +iYear+"年"+iMonth+"月"+1+"日";
+                Rqsc(iYear,iMonth,1)
+            };
+
+            Onext.onclick = function(){   //点击看日子
+                clearInterval(timer);
+                Ohms.innerHTML = "What time is it?";
+                iMonth ++;
+                console.log("imonth"+iMonth);
+                if(iMonth>12){
+                    iYear++;
+                    iMonth=1;
+                }
+                Odate.innerHTML ="&nbsp;&nbsp;" +iYear+"年"+iMonth+"月"+1+"日";
+                Rqsc(iYear,iMonth,1)
+            };
+
+            Ohms.onclick = function(){
+                clearInterval(timer); //timer是可以叠加的 !!!!!! 点击几次 就可以 弄几次  所以 必须先清理 再使用
+                timer = setInterval(Now,1000);
+            };
+
+
+           /* Wai.onmouseout=function() {
+                timer = setInterval(Now,1000);  //移出外框后 三秒  恢复
+            };*/
+
+
+            function Now() {
+                oldIy = iYear;
+                oldIM = iMonth;
+                oldId = iDate;
+                myTime = new Date();
+                iDate = myTime.getDate();
+                iMonth = myTime.getMonth() + 1;
+                iYear = myTime.getFullYear();
+                // 以上数字类型是对象
+                var iHou = myTime.getHours();
+                var iMin = myTime.getMinutes();
+                var iSec = myTime.getSeconds();
+                //console.log(iMonth);
+                //console.dir(iYear);
+                Odate.innerHTML ="&nbsp;&nbsp;" +iYear+"年"+iMonth+"月"+iDate+"日";
+                Ohms.innerHTML =jiage0(iHou)+"时"+jiage0(iMin)+"分"+jiage0(iSec)+"秒";
+
+                if(iYear!=oldIy||iMonth!=oldIM||iDate!=oldId) {
+                    Rqsc(iYear, iMonth, iDate);  //如果年月变了  才刷新日历 ß
+                }
+            }
+
+            function Rqsc(Year,Month,mDate) {
+                Orz.innerHTML = "";
+                var riqi = new Date();
+                riqi.setFullYear(Year);  // 这个地方 month  是我输入的实在的月份,但在计算机里面认识的Month是Month 减一
+
+
+
+                riqi.setMonth(Month);// 这个地方本来就加了一
+                riqi.setDate(0); //
+                var Dy = riqi.getDate();
+                console.log("算当月时间"+riqi+"设置为0就行");
+
+
+                //console.log(Dy);
+                riqi.setMonth(Month-1);
+                riqi.setDate(0); //这个地方隐形转换了Month   导致了我的错误  特别注意
+                var Sy = riqi.getDate();
+                console.log("算上月时间"+riqi+"设置为0就行");
+
+
+
+                var riqi2 = new Date();  //定义一个新的日期对象 计算 当天是星期几
+                riqi2.setFullYear(Year);
+                riqi2.setMonth(Month-1);
+                //riqi.setMonth(Month-1);™
+                console.log("算星期几"+riqi2.getMonth()+"这个month代表的是n+1月");
+                console.log(1);
+                riqi2.setDate(1);
+
+                var Wee = riqi2.getDay();
+                console.log(Wee);
+
+                for (var i = 1; i <= 42; i++) {
+                    //1号是从星期几开始就那么就产生几个空白格
+                    //这里传入值 a 就是输欧星期几开始 星期日开始 就是传入0 星期一 开始就是传入1
+                    //然后前面几个全部添加 空白格
+                    // 然后呢 其实前面的空白格就是 上个月的最后几天   这里就是 数组里面的数组?? A[11].LE-A] ...A[11].LE
+                    var OtemRZ = document.createElement("dd");
+
+                    if (i <= Wee) {
+                        console.log("1");
+                        OtemRZ.className = "RZB";
+                        if (Month == 1) {                               //  注意for 里面去嵌套  for  里面的for循环完了才会再次执行 外部的for所以 有些样式会被覆盖
+                            OtemRZ.innerHTML = 31 - Wee + i;//排出一月份那种 前面的月份是去年的
+                        } else {
+                            OtemRZ.innerHTML = Sy - Wee + i; //就是倒数
+                        }
+                    } else if (i > Dy + Wee) {   //为什么 写在后面就不走
+                        console.log("3");
+                        OtemRZ.className = "RZB";
+                        OtemRZ.innerHTML = i - (Dy + Wee);
+                        console.log(i - (Dy + Wee));
+                    } else {
+                        console.log("2");
+                        if (i == mDate + Wee) {
+                            OtemRZ.className = "RZtoday";
+                            OtemRZ.innerHTML = mDate;
+                        }else{
+                            OtemRZ.className = "RZ";
+                            OtemRZ.innerHTML = i - Wee;
+                        }
+
+                    }
+
+                    Orz.appendChild(OtemRZ);
+                }
+
+                }
+                //return Wee; //返回一个月份数组
+
+            function jiage0(obj){
+               return obj<10?"0"+obj:obj;
+            }
+        }
+
+
+
+
+
+    </script>
+</head>
+<body>
+
+<div id="Ob" >
+
+    <p id="time">&nbsp;&nbsp;--年-月日</p>
+    <p id="Hms">你好</p>
+    <P id="zuoyou"><span id="Prev"><</span><span id="Next">></span></P>
+    <div class="rili">
+        <ul id="xingqi">
+            <li>日</li><li>一</li><li>二</li><li>三</li><li>四</li><li>五</li><li>六</li>
+        </ul>
+        <dl id="shuzikuang">
+
+
+        </dl>
+        <dl id="yuefenxianhsiqi"></dl>
+    </div>
+</div>
+</body>
+</html>
